@@ -1,7 +1,13 @@
-в migrations - скрипты для создания таблиц 
-в pkg - logger и методы для подключения к бд
-в internal/entity - модели
-в config - инициализация структуры config 
-в internal/transcation -  вся логрика для системы транзакций
+**структура** 
 
-в cmd/server - файл main.go
+`migrations` - скрипты для создания таблиц 
+
+`pkg` - logger и методы для подключения к бд
+
+`internal/entity` - модели
+
+`config` - инициализация структуры config 
+
+`internal/transcation` -  вся логрика для системы транзакций
+
+`cmd/server` - файл main.go
