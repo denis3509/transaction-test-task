@@ -1,0 +1,29 @@
+{
+    "go.inferGopath": false,
+    "cSpell.words": [
+        "brianvoe",
+        "dbcontext",
+        "gofakeit",
+        "ozzo",
+        "stretchr"
+    ],
+    "go.testFlags": [
+        "-v"
+    ],
+ 
+    "go.alternateTools":{
+        "go": "grcgo"
+    },
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "localhost",
+            "database": "golang_messenger",
+            "username": "denis",
+            "password": "localpass"
+        }
+    ]
+}
