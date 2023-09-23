@@ -9,8 +9,8 @@ import (
 
 type Service interface {
 	GetUserBalance(userID int) ([]entity.CardBalance, error)
-	CreateInvoice(userID int, cardNumber int, currency entity.Currency, amount float64) (*entity.Transaction, error)
-	CreateWithdraw(userID int, cardID int, currency entity.Currency, amount float64) (*entity.Transaction, error)
+	CreateInvoice(cardNumber int, currency entity.Currency, amount float64) (*entity.Transaction, error)
+	CreateWithdraw(cardNumber int, currency entity.Currency, amount float64) (*entity.Transaction, error)
 }
 type service struct {
 	repository Repository
@@ -25,12 +25,12 @@ func (s service) GetUserBalance(userID int) ([]entity.CardBalance, error) {
 }
 
 func (s service) CreateInvoice(
-	userID int, cardNumber int,
+	cardNumber int,
 	currency entity.Currency,
 	amount float64) (*entity.Transaction, error) {
 
 	trans := entity.Transaction{
-		UserID:     userID,
+
 		CardNumber: cardNumber,
 		Type:       entity.Invoice,
 		Currency:   currency,
@@ -49,23 +49,26 @@ func (s service) CreateInvoice(
 	err = s.repository.CreateTransaction(&trans)
 	return &trans, err
 }
+
 var cardWithdrawLock map[int]sync.Mutex
 
+func getMutex(cardNumber int) {
+	// todo
+}
+
 func (s service) CreateWithdraw(
-	userID int,
 	cardNumber int,
 	currency entity.Currency,
 	amount float64) (*entity.Transaction, error) {
 
 	trans := entity.Transaction{
-		UserID:         userID,
-	    CardNumber: cardNumber,
-		Type:           entity.Withdraw,
-		Currency:       currency,
-		Amount:         amount,
-		CreatedAt:      time.Now(),
-		UpdatedAt:      time.Now(),
-		Status:         entity.Created,
+		CardNumber: cardNumber,
+		Type:       entity.Withdraw,
+		Currency:   currency,
+		Amount:     amount,
+		CreatedAt:  time.Now(),
+		UpdatedAt:  time.Now(),
+		Status:     entity.Created,
 	}
 	// TODO lock card for withdraw
 	card, err := s.repository.GetCard(cardNumber)

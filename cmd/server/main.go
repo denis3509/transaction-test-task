@@ -6,7 +6,7 @@ import (
 	"transaction/internal/transaction"
 	"transaction/pkg/db"
 	"transaction/pkg/log"
- 
+
 	"os"
 	"os/signal"
 	"strconv"
@@ -26,7 +26,7 @@ func main() {
 
 	log := log.NewLogger(os.Stdout)
 
-	db, err := db.MustOpen("postgres", cfg.DB.DSN())
+	db, err := db.MustOpen("postgres", cfg.DB.ConnString())
 	if err != nil {
 		log.Fatal(err)
 	}

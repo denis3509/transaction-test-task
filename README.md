@@ -11,3 +11,10 @@
 `internal/transcation` -  вся логрика для системы транзакций
 
 `cmd/server` - файл main.go
+
+Необходимо задать переменные среды:
+DB_NAME  
+DB_HOST 
+DB_PORT 
+DB_USER 
+DB_PASSWORD 

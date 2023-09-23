@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
-	"transaction/pkg/log" 
+	"transaction/pkg/log"
 )
 
 var logger = log.NewLogger(os.Stdout)
@@ -20,31 +20,40 @@ func getStrEnv(key string, fallback string, required bool) string {
 }
 
 func getIntEnv(key string, fallback int, required bool) int {
-	strValue := getStrEnv(key, strconv.Itoa(fallback), required)
-	value, err := strconv.Atoi(strValue)
-	if err != nil {
-		logger.Fatalf("Invalid variable ", key)
+
+	if valueStr, ok := os.LookupEnv(key); ok {
+		value, err := strconv.Atoi(valueStr)
+		if err != nil {
+			logger.Fatalf("Invalid variable ", key, "with value", valueStr)
+		}
+		return value
 	}
-	return value
+	if required {
+		logger.Fatal("Variable ", key, "is required")
+		return 0
+	} else {
+		return fallback
+	}
 }
 
 func getBoolEnv(key string, fallback bool, required bool) bool {
-	var fallbackStr string
-	if fallback == false {
-		fallbackStr = "0"
-	} else {
-		fallbackStr = "1"
-	}
-	strValue := getStrEnv(key, fallbackStr, required)
 
-	if strValue == "1" {
-		return true
-	} else if strValue == "0" {
+	if valueStr, ok := os.LookupEnv(key); ok {
+		if valueStr == "1" || valueStr == "true" {
+			return true
+		} else if valueStr == "0" || valueStr == "false" {
+			return false
+		} else {
+			logger.Fatalf("Invalid variable ", key)
+			return false
+		}
+	}
+	if required {
+		logger.Fatal("Variable ", key, "is required")
 		return false
 	} else {
-		logger.Fatalf("Invalid variable ", key)
+		return fallback
 	}
-	return false
 }
 
 type DBConfig struct {
@@ -65,6 +74,13 @@ type Config struct {
 var Default = Config{}
 
 func (c *DBConfig) DSN() string {
+	fmt.Printf("%s://%s:%d/%s?sslmode=disable&user=%s&password=%s",
+		c.DriverName,
+		c.Host,
+		c.Port,
+		c.Name,
+		c.User,
+		c.Password)
 	return fmt.Sprintf("%s://%s:%d/%s?sslmode=disable&user=%s&password=%s",
 		c.DriverName,
 		c.Host,
@@ -74,18 +90,27 @@ func (c *DBConfig) DSN() string {
 		c.Password,
 	)
 }
+func (c *DBConfig) ConnString() string {
+	return fmt.Sprintf("user=%s password=%s host=%s port=%d dbname=%s",
+		c.User,
+		c.Password,
+		c.Host,
+		c.Port,
+		c.Name,
+	)
+}
 
 func GetConfig() *Config {
 
 	dbConfig := &DBConfig{
 		Name:       getStrEnv("DB_NAME", "", true),
-		DriverName: getStrEnv("DRIVER_NAME", "", true),
+		DriverName: getStrEnv("DRIVER_NAME", "pq", false),
 		Host:       getStrEnv("DB_HOST", "localhost", false),
 		Port:       getIntEnv("DB_PORT", 5432, false),
 		User:       getStrEnv("DB_USER", "", true),
 		Password:   getStrEnv("DB_PASSWORD", "", true),
 	}
-  
+
 	return &Config{
 		DB:    dbConfig,
 		Port:  getIntEnv("PORT", 8080, false),

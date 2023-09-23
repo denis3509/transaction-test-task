@@ -47,7 +47,6 @@ type Card struct {
 
 type Transaction struct {
 	ID         int               `json:"id"`
-	UserID     int               `json:"userId"`
 	CardNumber int               `json:"cardId"`
 	Type       TransactionType   `json:"type"`
 	Currency   Currency          `json:"currency"`

@@ -28,7 +28,7 @@ func NewApi(service Service) *api {
 func (a *api) GetUserBalance(c *gin.Context) {
 	userID, err := strconv.Atoi(c.Param("userID"))
 	if err != nil {
-		c.IndentedJSON(http.StatusBadRequest, 
+		c.IndentedJSON(http.StatusBadRequest,
 			gin.H{"message": "internal error"})
 		return
 	}
@@ -42,7 +42,6 @@ func (a *api) GetUserBalance(c *gin.Context) {
 }
 
 type CreateInvoice struct {
-	UserID     int     `json:"userId"`
 	CardNumber int     `json:"cardId"`
 	Currency   string  `json:"currency"`
 	Amount     float64 `json:"amount"`
@@ -50,18 +49,18 @@ type CreateInvoice struct {
 
 func (a *api) CreateInvoice(c *gin.Context) {
 	var newInvoice CreateInvoice
- 
+
 	if err := c.BindJSON(&newInvoice); err != nil {
 		return
 	}
- 
-	if _ , err := a.service.CreateInvoice(
-		newInvoice.UserID,
+
+	if _, err := a.service.CreateInvoice(
+
 		newInvoice.CardNumber,
 		entity.Currency(newInvoice.Currency),
 		newInvoice.Amount,
-	); err!= nil{
-		c.JSON(http.StatusBadRequest, gin.H{"message" : "internal error"})
+	); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "internal error"})
 		return
 	}
 
@@ -70,19 +69,17 @@ func (a *api) CreateInvoice(c *gin.Context) {
 
 func (a *api) CreateWithdraw(c *gin.Context) {
 	var newInvoice CreateInvoice
- 
+
 	if err := c.BindJSON(&newInvoice); err != nil {
 		return
 	}
 
-	 
-	if _ , err := a.service.CreateWithdraw(
-		newInvoice.UserID,
+	if _, err := a.service.CreateWithdraw(
 		newInvoice.CardNumber,
 		entity.Currency(newInvoice.Currency),
 		newInvoice.Amount,
-	); err!= nil{
-		c.JSON(http.StatusBadRequest, gin.H{"message" : "internal error"})
+	); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "internal error"})
 		return
 	}
 
