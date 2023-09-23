@@ -1,10 +1,8 @@
 
 create table public.transaction
 (
-    id          integer   not null
-        constraint transaction_pk
-            primary key,
-    card_number integer      not null
+    id          serial  primary key not null,
+    card_number bigint      not null
         constraint transaction_card_number_fk
             references public.card,
     type        integer   not null,

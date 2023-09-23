@@ -27,11 +27,13 @@ func (r *repository) CountUserBalance(UserID int) ([]entity.CardBalance, error) 
 	var cards []entity.CardBalance
 	sql := `
 	select card_number,
+	      card.currency  ,
        s.total_success_invoice - s.total_success_withdraw as actual_balance,
        pending_invoice,
        pending_withdraw
        from
 (select card_number,
+	         
        sum(case when status=2 and type= 1
            then amount
            else   0
@@ -53,6 +55,8 @@ from transaction
 on card.number = transaction.card_number
                  where card.user_id = {:user_id}
 group by card_number) as s	
+	left join card 
+	on card.number = card_number
 `
 	q := r.db.NewQuery(sql)
 	q.Bind(dbx.Params{"user_id": UserID})
@@ -68,11 +72,13 @@ func (r *repository) CountCardBalance(cardNumber int) (*entity.CardBalance, erro
 	var card entity.CardBalance
 	sql := `
 	select card_number,
+	       card.currency  ,
        s.total_success_invoice - s.total_success_withdraw as actual_balance,
        pending_invoice,
        pending_withdraw
        from
 (select card_number,
+        currency,
        sum(case when status=2 and type= 1
            then amount
            else   0
@@ -94,6 +100,8 @@ from transaction
 on card.number = transaction.card_number
                  where card_number = {:card_number}
 group by card_number) as s	
+		left join card 
+	on card.number = card_number
 `
 	q := r.db.NewQuery(sql)
 	q.Bind(dbx.Params{"card_number": cardNumber})

@@ -1,6 +1,7 @@
 package transaction
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -26,8 +27,9 @@ func NewApi(service Service) *api {
 }
 
 func (a *api) GetUserBalance(c *gin.Context) {
-	userID, err := strconv.Atoi(c.Param("userID"))
+	userID, err := strconv.Atoi(c.Query("userID"))
 	if err != nil {
+		fmt.Print(err)
 		c.IndentedJSON(http.StatusBadRequest,
 			gin.H{"message": "internal error"})
 		return

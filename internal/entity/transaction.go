@@ -12,9 +12,10 @@ const (
 type TransactionStatus int
 
 const (
-	Error   TransactionStatus = 1
+	Created TransactionStatus = 1
 	Success TransactionStatus = 2
-	Created TransactionStatus = 3
+
+	Error TransactionStatus = 3
 )
 
 type Currency string
